@@ -4,4 +4,14 @@ import './registerServiceWorker'
 import router from './router'
 import store from './store'
 
-createApp(App).use(store).use(router).mount('#app')
+import { Button, List, Cell, Image as VanImage } from 'vant'
+import 'vant/lib/index.css'
+
+createApp(App)
+  .use(store)
+  .use(router)
+  .use(Button)
+  .use(List)
+  .use(Cell)
+  .use(VanImage)
+  .mount('#app')
