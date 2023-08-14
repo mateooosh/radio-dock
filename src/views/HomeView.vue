@@ -126,8 +126,7 @@ export default defineComponent({
   mounted() {
     this.getStations()
     this.getMostVotedStations()
-    this.favoriteStations = JSON.parse(localStorage.getItem('favorites') || [])
-    console.log(this.favoriteStations)
+    this.favoriteStations = JSON.parse(localStorage.getItem('favorites') || '[]')
   },
   computed: {
     hasActiveStation() {
