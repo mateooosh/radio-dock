@@ -26,10 +26,12 @@
           <span>Favorites</span>
           <font-awesome-icon icon="fa-solid fa-heart" size="l"/>
         </div>
-        <div class="stations-column">
-          <RadioStation v-for="(station, i) in favoriteStations" :key="i" :station="station"
-                        @play="onRadioStationPlayClick"/>
-        </div>
+        <data-load-status :has-data="hasFavoriteStations">
+          <div class="stations-column">
+            <RadioStation v-for="(station, i) in $store.state.favoriteStations" :key="i" :station="station"
+                          @play="onRadioStationPlayClick"/>
+          </div>
+        </data-load-status>
       </div>
     </div>
   </data-load-status>
@@ -40,37 +42,34 @@ import {defineComponent} from 'vue'
 import SearchBar from '@/components/SearchBar'
 import RadioStation from '@/components/RadioStation'
 import DataLoadStatus from '@/components/DataLoadStatus'
-import {createStore} from 'vuex'
+import {useStore} from 'vuex'
+import _ from 'lodash'
 
-const _ = require('lodash')
 const RadioBrowser = require('radio-browser')
 
 export default defineComponent({
   name: 'HomeView',
   components: {DataLoadStatus, SearchBar, RadioStation},
-  store: createStore,
+  store: useStore,
   data() {
     return {
       isLoading: true,
       hasData: false,
       hasError: false,
       query: '',
-      stations: [],
-      mostVotedStations: [],
-      favoriteStations: []
+      mostVotedStations: []
     }
   },
   methods: {
     playRandomStation() {
       this.$store.commit('setIsPlaying', false)
       this.$store.state.audio?.pause()
-      const randomStation = _.sample(this.stations)
+      const randomStation = _.sample(this.mostVotedStations)
       this.$store.commit('setActiveStation', randomStation)
       this.$store.commit('setAudio', new Audio(randomStation.url_resolved))
-      this.$store.state.audio.play()
-      // promise then
-      this.$store.commit('setIsPlaying', true)
-
+      this.$store.state.audio?.play().then(() => {
+        this.$store.commit('setIsPlaying', true)
+      })
     },
 
     async getMostVotedStations() {
@@ -89,12 +88,13 @@ export default defineComponent({
     } catch {
       this.hasError = true
     }
-
-    this.favoriteStations = JSON.parse(localStorage.getItem('favorites') || '[]')
   },
   computed: {
     hasActiveStation() {
       return !_.isEmpty(this.$store.state.activeStation)
+    },
+    hasFavoriteStations() {
+      return !_.isEmpty(this.$store.state.favoriteStations)
     }
   }
 })
@@ -109,6 +109,10 @@ export default defineComponent({
   gap: 16px;
   //to remove
   padding-bottom: 60px;
+
+  .stations-section:last-of-type {
+    padding-bottom: 20px;
+  }
 
   &-random-station {
     margin: 16px;
@@ -143,7 +147,6 @@ export default defineComponent({
     gap: 16px;
     padding: 0 16px;
     width: 100%;
-
 
     &::-webkit-scrollbar {
       display: none;

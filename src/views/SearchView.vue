@@ -21,8 +21,6 @@ import RadioStation from '@/components/RadioStation'
 import DataLoadStatus from '@/components/DataLoadStatus'
 import RadioBrowser from 'radio-browser'
 
-const _ = require('lodash')
-
 export default defineComponent({
   name: 'SearchView',
   components: {DataLoadStatus, SearchBar, RadioStation},
@@ -54,6 +52,7 @@ export default defineComponent({
   display: flex;
   flex-direction: column;
   gap: 16px;
+  padding-bottom: 60px;
 
   .stations-title {
     text-align: left;

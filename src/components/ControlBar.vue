@@ -1,22 +1,25 @@
 <template>
   <div class="control-bar">
+    <van-image v-if="$store.state.activeStation.favicon" fit="cover" round :radius="8" width="40px" height="40px"
+               :src="$store.state.activeStation.favicon"/>
+
     <van-notice-bar class="details" :text="$store.state.activeStation?.name || 'Choose station...'"/>
     <div class="controls">
-      <font-awesome-icon icon="fa-solid fa-backward-step" size="2xl"/>
+      <font-awesome-icon icon="fa-solid fa-backward-step" size="xl"/>
       <font-awesome-icon v-if="$store.state.isPlaying" @click="stopAudio" icon="fa-solid fa-stop" size="2xl"/>
       <font-awesome-icon v-else @click="resumeAudio" icon="fa-solid fa-play" size="2xl"/>
-      <font-awesome-icon icon="fa-solid fa-forward-step" size="2xl"/>
+      <font-awesome-icon icon="fa-solid fa-forward-step" size="xl"/>
     </div>
   </div>
 </template>
 
 <script>
 import {defineComponent} from 'vue'
-import {createStore} from 'vuex'
+import {useStore} from 'vuex'
 
 export default defineComponent({
   name: 'ControlBar',
-  store: createStore,
+  store: useStore,
   methods: {
     stopAudio() {
       this.$store.commit('setIsPlaying', false)
@@ -24,9 +27,10 @@ export default defineComponent({
     },
 
     resumeAudio() {
-      this.$store.state.audio?.play()
-      this.$store.commit('setIsPlaying', true)
-    },
+      this.$store.state.audio?.play().then(() => {
+        this.$store.commit('setIsPlaying', true)
+      })
+    }
   },
 
   computed: {
@@ -53,14 +57,20 @@ export default defineComponent({
     padding: 0;
     background-color: rgb(40, 40, 40);
     color: rgb(222, 222, 222);
+    font-weight: 600;
+    font-size: 16px;
   }
 
   .controls {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 48px;
-    flex: 1;
+    gap: 40px;
+
+    svg:active {
+      transform: scale(1.3);
+      transition: all .2s;
+    }
   }
 }
 </style>

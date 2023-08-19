@@ -4,7 +4,7 @@ import './registerServiceWorker'
 import router from './router'
 import store from './store'
 
-import {Button, List, Cell, Image as VanImage, Search, Icon, NoticeBar, Loading} from 'vant'
+import {Button, List, Cell, Image as VanImage, Search, Icon, NoticeBar, Loading, Notify} from 'vant'
 import 'vant/lib/index.css'
 
 // @ts-ignore
@@ -14,9 +14,9 @@ import { library } from '@fortawesome/fontawesome-svg-core'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 // @ts-ignore
-import { faPlay, faStop, faForwardStep, faBackwardStep, faFire, faHeart, faRadio } from '@fortawesome/free-solid-svg-icons'
+import { faPlay, faStop, faForwardStep, faBackwardStep, faFire, faHeart, faRadio, faTriangleExclamation } from '@fortawesome/free-solid-svg-icons'
 
-library.add(faPlay, faStop, faForwardStep, faBackwardStep, faFire, faHeart, faRadio)
+library.add(faPlay, faStop, faForwardStep, faBackwardStep, faFire, faHeart, faRadio, faTriangleExclamation)
 // https://fontawesome.com/docs/web/use-with/vue/style
 // https://fontawesome.com/search?q=step&o=r&m=free
 
@@ -31,5 +31,6 @@ createApp(App)
   .use(Icon)
   .use(NoticeBar)
   .use(Loading)
+  .use(Notify)
   .component('font-awesome-icon', FontAwesomeIcon)
   .mount('#app')

@@ -5,6 +5,15 @@
 
 <script setup lang="ts">
 import ControlBar from '@/components/ControlBar.vue'
+import {onMounted} from 'vue'
+import {useStore} from 'vuex'
+
+const store = useStore()
+
+onMounted(() => {
+  store.commit('setFavoriteStations', JSON.parse(localStorage.getItem('favorites') || '[]'))
+})
+
 </script>
 
 <style lang="scss">

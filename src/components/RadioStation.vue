@@ -11,7 +11,8 @@
         <Tag v-for="tag in tagsArray" :key="tag" :content="tag"/>
       </div>
       <div class="radio-station-actions">
-        <button v-if="$store.state.activeStation === station && $store.state.isPlaying" @click="pauseStation">
+        <button v-if="isCurrentlyPlaying" @click="pauseStation"
+                class="inactive">
           <font-awesome-icon icon="fa-solid fa-stop"/>
           <span>Pause</span>
         </button>
@@ -20,7 +21,11 @@
           <span>Play</span>
         </button>
 
-        <button>
+        <button v-if="isFavorite" class="inactive">
+          <font-awesome-icon icon="fa-solid fa-fire"/>
+          <span @click="removeFromFavorites">Unobserve</span>
+        </button>
+        <button v-else>
           <font-awesome-icon icon="fa-solid fa-fire"/>
           <span @click="addToFavorites">Observe</span>
         </button>
@@ -32,12 +37,13 @@
 <script>
 import {defineComponent} from 'vue'
 import Tag from '@/components/Tag.vue'
-import {createStore} from 'vuex'
-const _ = require('lodash')
+import {useStore} from 'vuex'
+import _ from 'lodash'
+import {showNotify} from 'vant'
 
 export default defineComponent({
   name: 'RadioStation',
-  store: createStore,
+  store: useStore,
   components: {
     Tag
   },
@@ -55,15 +61,20 @@ export default defineComponent({
       })
     },
 
-    pauseStation () {
+    pauseStation() {
       this.$store.commit('setIsPlaying', false)
       this.$store.state.audio?.pause()
     },
 
-    addToFavorites () {
-      const stationsInLocalStorage = JSON.parse(localStorage.getItem('favorites') || '[]')
-      const result = [...stationsInLocalStorage, this.station]
-      localStorage.setItem('favorites', JSON.stringify(result))
+    addToFavorites() {
+      this.$store.commit('addStationToFavorites', this.station)
+      showNotify({type: 'success', message: `${this.station.name} added to favorites`})
+    },
+
+    removeFromFavorites() {
+      this.$store.commit('removeFromFavorites', this.station.stationuuid)
+      showNotify({type: 'warning', message: `${this.station.name} removed from favorites`})
+
     }
   },
 
@@ -71,8 +82,14 @@ export default defineComponent({
     hasFavicon() {
       return this.station.favicon
     },
-    tagsArray () {
+    tagsArray() {
       return _.filter(_.split(this.station.tags, ','), (tag) => !_.isEmpty(tag))
+    },
+    isCurrentlyPlaying() {
+      return this.$store.state.isPlaying && this.$store.state.activeStation === this.station
+    },
+    isFavorite() {
+      return _.some(this.$store.state.favoriteStations, ['stationuuid', this.station.stationuuid])
     }
   }
 })
@@ -125,7 +142,7 @@ export default defineComponent({
   &-actions {
     display: flex;
     flex-direction: row;
-    gap:8px;
+    gap: 8px;
 
     > button {
       width: 50%;
@@ -142,6 +159,13 @@ export default defineComponent({
       gap: 8px;
       justify-content: center;
       align-items: center;
+
+      &.inactive {
+        background-color: transparent;
+        border: 2px solid #5E2F83;
+        color: #5E2F83;
+        //background-color: lighten(#5E2F83, 16);
+      }
     }
   }
 }
