@@ -5,11 +5,15 @@ import SearchView from '../views/SearchView.vue'
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
+    redirect: { name: 'home' }
+  },
+  {
+    path: '/radio-dock/',
     name: 'home',
     component: HomeView
   },
   {
-    path: '/search/:query',
+    path: '/radio-dock/search/:query',
     name: 'search',
     component: SearchView
   }

@@ -1,6 +1,8 @@
 <template>
   <div class="data-load-status">
-    <div v-if="isLoading">Loading</div>
+    <div v-if="isLoading">
+      <van-loading type="spinner" color="#5E2F83" size="70px"/>
+    </div>
     <div v-else-if="hasError">Error</div>
     <slot v-else-if="hasData"></slot>
     <div v-else>Nothing to display</div>
@@ -30,5 +32,10 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-
+.data-load-status {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+}
 </style>

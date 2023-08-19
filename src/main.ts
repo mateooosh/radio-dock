@@ -4,7 +4,7 @@ import './registerServiceWorker'
 import router from './router'
 import store from './store'
 
-import {Button, List, Cell, Image as VanImage, Search, Icon, NoticeBar } from 'vant'
+import {Button, List, Cell, Image as VanImage, Search, Icon, NoticeBar, Loading} from 'vant'
 import 'vant/lib/index.css'
 
 // @ts-ignore
@@ -30,5 +30,6 @@ createApp(App)
   .use(Search)
   .use(Icon)
   .use(NoticeBar)
+  .use(Loading)
   .component('font-awesome-icon', FontAwesomeIcon)
   .mount('#app')

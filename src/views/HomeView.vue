@@ -4,9 +4,9 @@
       <SearchBar/>
       <button class="radio-random-station" @click="playRandomStation">Play random station</button>
       <div v-if="hasActiveStation">
-        <van-image width="100px" height="100px" fit="cover" :src="activeStation.favicon"/>
+        <van-image width="100px" height="100px" fit="cover" :src="$store.state.activeStation.favicon"/>
         <div>
-          Name: {{ activeStation.name }}
+          Name: {{ $store.state.activeStation.name }}
         </div>
       </div>
       <div class="stations-section">
@@ -31,92 +31,52 @@
                         @play="onRadioStationPlayClick"/>
         </div>
       </div>
-
-      <!--      control bar-->
-      <div class="control-bar">
-        <van-notice-bar class="details" :text="activeStation?.name || 'Choose station...'"/>
-        <div class="controls">
-          <font-awesome-icon icon="fa-solid fa-backward-step" size="2xl"/>
-          <font-awesome-icon v-if="isPlaying" @click="stopAudio" icon="fa-solid fa-stop" size="2xl"/>
-          <font-awesome-icon v-else @click="resumeAudio" icon="fa-solid fa-play" size="2xl"/>
-          <font-awesome-icon icon="fa-solid fa-forward-step" size="2xl"/>
-        </div>
-      </div>
     </div>
   </data-load-status>
 </template>
 
 <script>
 import {defineComponent} from 'vue'
-import {RadioBrowserApi, StationSearchType} from 'radio-browser-api'
 import SearchBar from '@/components/SearchBar'
 import RadioStation from '@/components/RadioStation'
 import DataLoadStatus from '@/components/DataLoadStatus'
+import {createStore} from 'vuex'
 
 const _ = require('lodash')
+const RadioBrowser = require('radio-browser')
 
 export default defineComponent({
   name: 'HomeView',
   components: {DataLoadStatus, SearchBar, RadioStation},
+  store: createStore,
   data() {
     return {
       isLoading: true,
       hasData: false,
       hasError: false,
-      isPlaying: false,
       query: '',
-      audio: null,
       stations: [],
-      activeStation: null,
       mostVotedStations: [],
       favoriteStations: []
     }
   },
   methods: {
-    async getStations() {
-      const api = new RadioBrowserApi('My Radio App')
-      this.stations = await api.getStationsBy(StationSearchType.byName, 'Open FM')
-      this.isLoading = false
-      this.hasData = true
-    },
-
     playRandomStation() {
-      this.audio?.pause()
-      this.activeStation = _.sample(this.stations)
-      this.audio = new Audio(this.activeStation.urlResolved)
-      this.audio.play()
-      this.isPlaying = true
-    },
+      this.$store.commit('setIsPlaying', false)
+      this.$store.state.audio?.pause()
+      const randomStation = _.sample(this.stations)
+      this.$store.commit('setActiveStation', randomStation)
+      this.$store.commit('setAudio', new Audio(randomStation.url_resolved))
+      this.$store.state.audio.play()
+      // promise then
+      this.$store.commit('setIsPlaying', true)
 
-    playStation(urlResolved) {
-      if (!urlResolved)
-        return
-
-      this.audio?.pause()
-      this.audio = new Audio(urlResolved)
-      this.audio.play()
-      this.isPlaying = true
-    },
-
-    stopAudio() {
-      this.audio?.pause()
-      this.isPlaying = false
-    },
-
-    resumeAudio() {
-      this.audio?.play()
-      this.isPlaying = true
     },
 
     async getMostVotedStations() {
-      const api = new RadioBrowserApi('My Radio App')
-      this.mostVotedStations = await api.getStationsByVotes(20)
-      console.log(this.mostVotedStations)
-    },
-
-    onRadioStationPlayClick(radioStation) {
-      this.activeStation = radioStation
-      this.playStation(radioStation.urlResolved)
+      this.mostVotedStations = await RadioBrowser.getStations({ by: 'topvote', limit: 10})
+      this.isLoading = false
+      this.hasData = true
     },
 
     seeAll () {
@@ -124,13 +84,17 @@ export default defineComponent({
     }
   },
   mounted() {
-    this.getStations()
-    this.getMostVotedStations()
+    try {
+      this.getMostVotedStations()
+    } catch {
+      this.hasError = true
+    }
+
     this.favoriteStations = JSON.parse(localStorage.getItem('favorites') || '[]')
   },
   computed: {
     hasActiveStation() {
-      return !!this.activeStation
+      return !_.isEmpty(this.$store.state.activeStation)
     }
   }
 })
@@ -183,35 +147,6 @@ export default defineComponent({
 
     &::-webkit-scrollbar {
       display: none;
-    }
-  }
-
-  .control-bar {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    height: 60px;
-    width: 100%;
-    padding: 0 16px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    background-color: rgb(40, 40, 40);
-    color: rgb(222, 222, 222);
-
-    .details {
-      flex: 1;
-      padding: 0;
-      background-color: rgb(40, 40, 40);
-      color: rgb(222, 222, 222);
-    }
-
-    .controls {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 48px;
-      flex: 1;
     }
   }
 }

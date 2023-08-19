@@ -17,7 +17,7 @@ export default defineComponent({
   },
   methods: {
     onEnterDown() {
-      this.$router.push(`/search/${this.query}`)
+      this.$router.push(`/radio-dock/search/${this.query}`)
     }
   }
 })

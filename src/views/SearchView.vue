@@ -19,7 +19,7 @@ import {defineComponent} from 'vue'
 import SearchBar from '@/components/SearchBar'
 import RadioStation from '@/components/RadioStation'
 import DataLoadStatus from '@/components/DataLoadStatus'
-import {RadioBrowserApi, StationSearchType} from 'radio-browser-api'
+import RadioBrowser from 'radio-browser'
 
 const _ = require('lodash')
 
@@ -39,8 +39,7 @@ export default defineComponent({
   },
   methods: {
     async searchStations() {
-      const api = new RadioBrowserApi('My Radio App')
-      this.stations = _.reverse(_.sortBy(await api.getStationsBy(StationSearchType.byName, this.$route.params.query), 'votes'))
+      this.stations = await RadioBrowser.searchStations({name: 'RMF FM', limit: 20, order: 'votes', reverse: true})
       this.isLoading = false
       this.hasData = true
     }

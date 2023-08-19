@@ -8,13 +8,18 @@
     <div class="radio-station-details">
       <div class="radio-station-name">{{ station.name }}</div>
       <div class="radio-station-tags">
-        <Tag v-for="tag in station.tags" :key="tag" :content="tag"/>
+        <Tag v-for="tag in tagsArray" :key="tag" :content="tag"/>
       </div>
       <div class="radio-station-actions">
-        <button @click="playStation">
+        <button v-if="$store.state.activeStation === station && $store.state.isPlaying" @click="pauseStation">
+          <font-awesome-icon icon="fa-solid fa-stop"/>
+          <span>Pause</span>
+        </button>
+        <button v-else @click="playStation">
           <font-awesome-icon icon="fa-solid fa-play"/>
           <span>Play</span>
         </button>
+
         <button>
           <font-awesome-icon icon="fa-solid fa-fire"/>
           <span @click="addToFavorites">Observe</span>
@@ -27,9 +32,12 @@
 <script>
 import {defineComponent} from 'vue'
 import Tag from '@/components/Tag.vue'
+import {createStore} from 'vuex'
+const _ = require('lodash')
 
 export default defineComponent({
   name: 'RadioStation',
+  store: createStore,
   components: {
     Tag
   },
@@ -38,7 +46,18 @@ export default defineComponent({
   },
   methods: {
     playStation() {
-      this.$emit('play', this.station)
+      this.$store.commit('setIsPlaying', false)
+      this.$store.state.audio?.pause()
+      this.$store.commit('setActiveStation', this.station)
+      this.$store.commit('setAudio', new Audio(this.station.url_resolved))
+      this.$store.state.audio?.play().then(() => {
+        this.$store.commit('setIsPlaying', true)
+      })
+    },
+
+    pauseStation () {
+      this.$store.commit('setIsPlaying', false)
+      this.$store.state.audio?.pause()
     },
 
     addToFavorites () {
@@ -51,6 +70,9 @@ export default defineComponent({
   computed: {
     hasFavicon() {
       return this.station.favicon
+    },
+    tagsArray () {
+      return _.filter(_.split(this.station.tags, ','), (tag) => !_.isEmpty(tag))
     }
   }
 })
