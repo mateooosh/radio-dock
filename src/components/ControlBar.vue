@@ -39,16 +39,16 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+@import '../styles/mixins';
+
 .control-bar {
+  @include flexbox(row, normal, center, 8px);
   position: fixed;
   bottom: 0;
   left: 0;
   height: 60px;
   width: 100%;
   padding: 0 16px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
   background-color: rgb(40, 40, 40);
   color: rgb(222, 222, 222);
 
@@ -62,10 +62,7 @@ export default defineComponent({
   }
 
   .controls {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 40px;
+    @include flexbox(row, center, center, 40px);
 
     svg:active {
       transform: scale(1.3);

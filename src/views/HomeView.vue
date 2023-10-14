@@ -3,24 +3,6 @@
     <div class="radio">
       <SearchBar/>
       <button class="radio-random-station" @click="playRandomStation">Play random station</button>
-      <div v-if="hasActiveStation">
-        <van-image width="100px" height="100px" fit="cover" :src="$store.state.activeStation.favicon"/>
-        <div>
-          Name: {{ $store.state.activeStation.name }}
-        </div>
-      </div>
-      <div class="stations-section">
-        <div class="stations-title">
-          <span>Popular</span>
-          <font-awesome-icon icon="fa-solid fa-fire" size="l"/>
-          <span class="stations-title-see-all" @click="seeAll">See all</span>
-        </div>
-        <div class="stations-column">
-          <RadioStation v-for="(station, i) in mostVotedStations" :key="i" :station="station"
-                        @play="onRadioStationPlayClick"/>
-        </div>
-      </div>
-
       <div class="stations-section">
         <div class="stations-title">
           <span>Favorites</span>
@@ -33,7 +15,21 @@
           </div>
         </data-load-status>
       </div>
+
+      <div class="stations-section">
+        <div class="stations-title">
+          <span>Popular</span>
+          <font-awesome-icon icon="fa-solid fa-fire" size="l"/>
+          <span class="stations-title-see-all" @click="seeAll">See all</span>
+        </div>
+        <div class="stations-column">
+          <RadioStation v-for="(station, i) in mostVotedStations" :key="i" :station="station"
+                        @play="onRadioStationPlayClick"/>
+        </div>
+      </div>
     </div>
+
+    <control-bar/>
   </data-load-status>
 </template>
 
@@ -41,6 +37,7 @@
 import {defineComponent} from 'vue'
 import SearchBar from '@/components/SearchBar'
 import RadioStation from '@/components/RadioStation'
+import ControlBar from '@/components/ControlBar.vue'
 import DataLoadStatus from '@/components/DataLoadStatus'
 import {useStore} from 'vuex'
 import _ from 'lodash'
@@ -49,7 +46,7 @@ const RadioBrowser = require('radio-browser')
 
 export default defineComponent({
   name: 'HomeView',
-  components: {DataLoadStatus, SearchBar, RadioStation},
+  components: {DataLoadStatus, SearchBar, RadioStation, ControlBar},
   store: useStore,
   data() {
     return {
@@ -73,12 +70,12 @@ export default defineComponent({
     },
 
     async getMostVotedStations() {
-      this.mostVotedStations = await RadioBrowser.getStations({ by: 'topvote', limit: 10})
+      this.mostVotedStations = await RadioBrowser.getStations({by: 'topvote', limit: 10})
       this.isLoading = false
       this.hasData = true
     },
 
-    seeAll () {
+    seeAll() {
       alert('Not implemented yet ;)')
     }
   },
@@ -90,9 +87,6 @@ export default defineComponent({
     }
   },
   computed: {
-    hasActiveStation() {
-      return !_.isEmpty(this.$store.state.activeStation)
-    },
     hasFavoriteStations() {
       return !_.isEmpty(this.$store.state.favoriteStations)
     }
@@ -101,12 +95,12 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+@import '../styles/mixins';
+
 .radio {
+  @include flexbox(column, normal, normal, 16px);
   min-height: 100vh;
   width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
   //to remove
   padding-bottom: 60px;
 
@@ -126,12 +120,11 @@ export default defineComponent({
   }
 
   .stations-title {
+    @include flexbox(row, normal, normal, 8px);
     text-align: left;
     padding: 8px 16px;
     font-weight: 600;
     font-size: 18px;
-    display: flex;
-    gap: 8px;
 
     &-see-all {
       flex-grow: 1;
@@ -142,9 +135,7 @@ export default defineComponent({
   }
 
   .stations-column {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
+    @include flexbox(column, normal, normal, 16px);
     padding: 0 16px;
     width: 100%;
 

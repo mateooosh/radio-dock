@@ -1,10 +1,8 @@
 <template>
   <router-view/>
-  <control-bar/>
 </template>
 
 <script setup lang="ts">
-import ControlBar from '@/components/ControlBar.vue'
 import {onMounted} from 'vue'
 import {useStore} from 'vuex'
 
@@ -12,6 +10,10 @@ const store = useStore()
 
 onMounted(() => {
   store.commit('setFavoriteStations', JSON.parse(localStorage.getItem('favorites') || '[]'))
+
+  const activeStation = JSON.parse(localStorage.getItem('activeStation') || '{}')
+  store.commit('setActiveStation', activeStation)
+  store.commit('setAudio', new Audio(activeStation?.url_resolved))
 })
 
 </script>
@@ -27,6 +29,8 @@ onMounted(() => {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   font-size: 16px;
-  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
 }
 </style>

@@ -96,27 +96,24 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+@import '../styles/mixins';
+
 .radio-station {
+  @include flexbox(row, normal, normal, 16px);
   height: 100px;
-  display: flex;
-  flex-direction: row;
-  gap: 16px;
 
   &-image {
+    @include flexbox(row, center, center);
+
     flex-shrink: 0;
     width: 100px;
     height: 100px;
     border-radius: 16px;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
     box-shadow: rgba(100, 100, 111, 0.2) 0 7px 29px 0;
   }
 
   &-details {
-    display: flex;
-    flex-direction: column;
+    @include flexbox(column, normal, normal);
     flex-grow: 1;
     padding: 4px 0;
     justify-content: space-between;
@@ -128,10 +125,7 @@ export default defineComponent({
   }
 
   &-tags {
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-start;
-    gap: 4px;
+    @include flexbox(row, flex-start, normal, 4px);
     overflow-x: auto;
     overflow-y: hidden;
     //hide scrollbar
@@ -140,11 +134,10 @@ export default defineComponent({
   }
 
   &-actions {
-    display: flex;
-    flex-direction: row;
-    gap: 8px;
+    @include flexbox(row, normal, normal, 8px);
 
     > button {
+      @include flexbox(row, center, center, 8px);
       width: 50%;
       height: 30px;
       background-color: #5E2F83;
@@ -154,17 +147,11 @@ export default defineComponent({
       border-radius: 8px;
       font-weight: 600;
       font-size: 13px;
-      display: flex;
-      flex-direction: row;
-      gap: 8px;
-      justify-content: center;
-      align-items: center;
 
       &.inactive {
         background-color: transparent;
         border: 2px solid #5E2F83;
         color: #5E2F83;
-        //background-color: lighten(#5E2F83, 16);
       }
     }
   }

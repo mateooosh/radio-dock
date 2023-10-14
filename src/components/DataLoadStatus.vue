@@ -36,6 +36,8 @@ const props =  defineProps({
 @import '../styles/mixins';
 
 .data-load-status {
+  flex: 1;
+
   @include flexbox(row, center, center);
 
   .error, .no-data {

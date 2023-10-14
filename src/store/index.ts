@@ -13,6 +13,7 @@ export default createStore({
   mutations: {
     setActiveStation(state, payload) {
       state.activeStation = payload
+      localStorage.setItem('activeStation', JSON.stringify(state.activeStation))
     },
     setIsPlaying(state, payload) {
       state.isPlaying = payload

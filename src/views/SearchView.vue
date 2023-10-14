@@ -37,7 +37,7 @@ export default defineComponent({
   },
   methods: {
     async searchStations() {
-      this.stations = await RadioBrowser.searchStations({name: 'RMF FM', limit: 20, order: 'votes', reverse: true})
+      this.stations = await RadioBrowser.searchStations({name: this.$route.params.query, limit: 20, order: 'votes', reverse: true})
       this.isLoading = false
       this.hasData = true
     }
@@ -46,30 +46,26 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+@import '../styles/mixins';
+
 .radio {
+  @include flexbox(column, normal, normal, 16px);
   min-height: 100vh;
   width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
   padding-bottom: 60px;
 
   .stations-title {
+    @include flexbox(row, normal, normal, 8px);
     text-align: left;
     padding: 8px 16px;
     font-weight: 600;
     font-size: 18px;
-    display: flex;
-    gap: 8px;
   }
 
   .stations-column {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
+    @include flexbox(column, normal, normal, 16px);
     padding: 0 16px;
     width: 100%;
-
 
     &::-webkit-scrollbar {
       display: none;
