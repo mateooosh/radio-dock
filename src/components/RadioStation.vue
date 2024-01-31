@@ -11,7 +11,11 @@
         <Tag v-for="tag in tagsArray" :key="tag" :content="tag"/>
       </div>
       <div class="radio-station-actions">
-        <button v-if="isCurrentlyPlaying" @click="pauseStation"
+        <button v-if="isCurrentlyLoading" class="inactive">
+          <font-awesome-icon icon="fa-solid fa-spinner" class="spin"/>
+          <span>Loading</span>
+        </button>
+        <button v-else-if="isCurrentlyPlaying" @click="pauseStation"
                 class="inactive">
           <font-awesome-icon icon="fa-solid fa-stop"/>
           <span>Pause</span>
@@ -56,9 +60,10 @@ export default defineComponent({
       this.$store.state.audio?.pause()
       this.$store.commit('setActiveStation', this.station)
       this.$store.commit('setAudio', new Audio(this.station.url_resolved))
-      this.$store.state.audio?.play().then(() => {
-        this.$store.commit('setIsPlaying', true)
-      })
+      this.$store.commit('setIsLoading', true)
+      this.$store.state.audio?.play()
+          .then(() => this.$store.commit('setIsPlaying', true))
+          .finally(() => this.$store.commit('setIsLoading', false))
     },
 
     pauseStation() {
@@ -74,7 +79,6 @@ export default defineComponent({
     removeFromFavorites() {
       this.$store.commit('removeFromFavorites', this.station.stationuuid)
       showNotify({type: 'warning', message: `${this.station.name} removed from favorites`})
-
     }
   },
 
@@ -84,6 +88,9 @@ export default defineComponent({
     },
     tagsArray() {
       return _.filter(_.split(this.station.tags, ','), (tag) => !_.isEmpty(tag))
+    },
+    isCurrentlyLoading() {
+      return this.$store.state.isLoading && this.$store.state.activeStation === this.station
     },
     isCurrentlyPlaying() {
       return this.$store.state.isPlaying && this.$store.state.activeStation === this.station
@@ -135,6 +142,10 @@ export default defineComponent({
 
   &-actions {
     @include flexbox(row, normal, normal, 8px);
+
+    .spin {
+      @include spin;
+    }
 
     > button {
       @include flexbox(row, center, center, 8px);

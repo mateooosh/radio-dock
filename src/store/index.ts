@@ -5,6 +5,7 @@ export default createStore({
   state: {
     activeStation: {},
     isPlaying: false,
+    isLoading: false,
     audio: null,
     favoriteStations: new Array([])
   },
@@ -17,6 +18,9 @@ export default createStore({
     },
     setIsPlaying(state, payload) {
       state.isPlaying = payload
+    },
+    setIsLoading(state, payload) {
+      state.isLoading = payload
     },
     setAudio(state, payload) {
       state.audio = payload

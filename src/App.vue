@@ -1,10 +1,12 @@
 <template>
   <router-view/>
+  <control-bar/>
 </template>
 
 <script setup lang="ts">
 import {onMounted} from 'vue'
 import {useStore} from 'vuex'
+import ControlBar from '@/components/ControlBar.vue'
 
 const store = useStore()
 

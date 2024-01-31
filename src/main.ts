@@ -14,9 +14,9 @@ import { library } from '@fortawesome/fontawesome-svg-core'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 // @ts-ignore
-import { faPlay, faStop, faForwardStep, faBackwardStep, faFire, faHeart, faRadio, faTriangleExclamation } from '@fortawesome/free-solid-svg-icons'
+import { faPlay, faStop, faForwardStep, faBackwardStep, faFire, faHeart, faRadio, faTriangleExclamation, faSpinner } from '@fortawesome/free-solid-svg-icons'
 
-library.add(faPlay, faStop, faForwardStep, faBackwardStep, faFire, faHeart, faRadio, faTriangleExclamation)
+library.add(faPlay, faStop, faForwardStep, faBackwardStep, faFire, faHeart, faRadio, faTriangleExclamation, faSpinner)
 // https://fontawesome.com/docs/web/use-with/vue/style
 // https://fontawesome.com/search?q=step&o=r&m=free
 

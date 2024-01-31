@@ -27,7 +27,6 @@
       </div>
     </div>
 
-    <control-bar/>
   </data-load-status>
 </template>
 
@@ -35,7 +34,6 @@
 import {defineComponent} from 'vue'
 import SearchBar from '@/components/SearchBar'
 import RadioStation from '@/components/RadioStation'
-import ControlBar from '@/components/ControlBar.vue'
 import DataLoadStatus from '@/components/DataLoadStatus'
 import {useStore} from 'vuex'
 import _ from 'lodash'
@@ -44,7 +42,7 @@ const RadioBrowser = require('radio-browser')
 
 export default defineComponent({
   name: 'HomeView',
-  components: {DataLoadStatus, SearchBar, RadioStation, ControlBar},
+  components: {DataLoadStatus, SearchBar, RadioStation},
   store: useStore,
   data() {
     return {

@@ -6,7 +6,8 @@
     <van-notice-bar class="details" :text="$store.state.activeStation?.name || 'Choose station...'"/>
     <div class="controls">
       <font-awesome-icon icon="fa-solid fa-backward-step" size="xl"/>
-      <font-awesome-icon v-if="$store.state.isPlaying" @click="pauseAudio" icon="fa-solid fa-stop" size="2xl"/>
+      <font-awesome-icon v-if="$store.state.isLoading" icon="fa-solid fa-spinner" size="2xl" class="spin"/>
+      <font-awesome-icon v-else-if="$store.state.isPlaying" @click="pauseAudio" icon="fa-solid fa-stop" size="2xl"/>
       <font-awesome-icon v-else @click="playAudio" icon="fa-solid fa-play" size="2xl"/>
       <font-awesome-icon icon="fa-solid fa-forward-step" size="xl"/>
     </div>
@@ -33,9 +34,10 @@ export default defineComponent({
     },
 
     playAudio() {
-      this.$store.state.audio?.play().then(() => {
-        this.$store.commit('setIsPlaying', true)
-      })
+      this.$store.commit('setIsLoading', true)
+      this.$store.state.audio?.play()
+          .then(() => this.$store.commit('setIsPlaying', true))
+          .finally(() => this.$store.commit('setIsLoading', false))
     }
   }
 })
@@ -65,11 +67,16 @@ export default defineComponent({
   }
 
   .controls {
-    @include flexbox(row, center, center, 40px);
+    @include flexbox(row, space-between, center);
+    width: 134px;
 
     svg:active {
       transform: scale(1.3);
       transition: all .2s;
+    }
+
+    .spin {
+      @include spin;
     }
   }
 }
