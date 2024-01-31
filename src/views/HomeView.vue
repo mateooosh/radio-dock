@@ -10,8 +10,7 @@
         </div>
         <data-load-status :has-data="hasFavoriteStations">
           <div class="stations-column">
-            <RadioStation v-for="(station, i) in $store.state.favoriteStations" :key="i" :station="station"
-                          @play="onRadioStationPlayClick"/>
+            <RadioStation v-for="(station, i) in $store.state.favoriteStations" :key="i" :station="station"/>
           </div>
         </data-load-status>
       </div>
@@ -23,8 +22,7 @@
           <span class="stations-title-see-all" @click="seeAll">See all</span>
         </div>
         <div class="stations-column">
-          <RadioStation v-for="(station, i) in mostVotedStations" :key="i" :station="station"
-                        @play="onRadioStationPlayClick"/>
+          <RadioStation v-for="(station, i) in mostVotedStations" :key="i" :station="station"/>
         </div>
       </div>
     </div>

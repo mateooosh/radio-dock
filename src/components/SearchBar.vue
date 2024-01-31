@@ -1,7 +1,7 @@
 <template>
   <div class="search-bar">
     <input class="input" type="text" v-model="query" placeholder="Search..." @keydown.enter="onEnterDown"/>
-    <van-icon class="icon" name="search" size="24"/>
+    <van-icon class="icon" name="search" size="24px"/>
   </div>
 </template>
 

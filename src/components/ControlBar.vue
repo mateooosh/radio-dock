@@ -6,8 +6,8 @@
     <van-notice-bar class="details" :text="$store.state.activeStation?.name || 'Choose station...'"/>
     <div class="controls">
       <font-awesome-icon icon="fa-solid fa-backward-step" size="xl"/>
-      <font-awesome-icon v-if="$store.state.isPlaying" @click="stopAudio" icon="fa-solid fa-stop" size="2xl"/>
-      <font-awesome-icon v-else @click="resumeAudio" icon="fa-solid fa-play" size="2xl"/>
+      <font-awesome-icon v-if="$store.state.isPlaying" @click="pauseAudio" icon="fa-solid fa-stop" size="2xl"/>
+      <font-awesome-icon v-else @click="playAudio" icon="fa-solid fa-play" size="2xl"/>
       <font-awesome-icon icon="fa-solid fa-forward-step" size="xl"/>
     </div>
   </div>
@@ -20,20 +20,23 @@ import {useStore} from 'vuex'
 export default defineComponent({
   name: 'ControlBar',
   store: useStore,
+  mounted() {
+    if ('mediaSession' in navigator) {
+      navigator.mediaSession.setActionHandler('pause', () => this.pauseAudio())
+      navigator.mediaSession.setActionHandler('play', () => this.playAudio())
+    }
+  },
   methods: {
-    stopAudio() {
+    pauseAudio() {
       this.$store.commit('setIsPlaying', false)
       this.$store.state.audio?.pause()
     },
 
-    resumeAudio() {
+    playAudio() {
       this.$store.state.audio?.play().then(() => {
         this.$store.commit('setIsPlaying', true)
       })
     }
-  },
-
-  computed: {
   }
 })
 </script>
