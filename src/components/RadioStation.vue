@@ -90,10 +90,10 @@ export default defineComponent({
       return _.filter(_.split(this.station.tags, ','), (tag) => !_.isEmpty(tag))
     },
     isCurrentlyLoading() {
-      return this.$store.state.isLoading && this.$store.state.activeStation === this.station
+      return this.$store.state.isLoading && this.$store.state.activeStation.stationuuid === this.station.stationuuid
     },
     isCurrentlyPlaying() {
-      return this.$store.state.isPlaying && this.$store.state.activeStation === this.station
+      return this.$store.state.isPlaying && this.$store.state.activeStation.stationuuid === this.station.stationuuid
     },
     isFavorite() {
       return _.some(this.$store.state.favoriteStations, ['stationuuid', this.station.stationuuid])
