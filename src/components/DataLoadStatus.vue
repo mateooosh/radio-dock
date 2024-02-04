@@ -16,7 +16,7 @@
 </template>
 
 <script setup lang="ts">
-const props =  defineProps({
+const props = defineProps({
   isLoading: {
     type: Boolean,
     default: false
@@ -29,7 +29,43 @@ const props =  defineProps({
     type: Boolean,
     default: false
   }
+  // showDelayInMs: {
+  //   type: Number,
+  //   default: 0
+  // },
+  // hideDelayInMs: {
+  //   type: Number,
+  //   default: 0
+  // }
 })
+
+// const setHasData = (hasData: boolean) => {
+//   if (hasData) {
+//     if (props.showDelayInMs) {
+//       setTimeout(() => {
+//         state.hasDataWithDelay = true
+//       }, props.showDelayInMs)
+//     } else {
+//       state.hasDataWithDelay = true
+//     }
+//   } else {
+//     if (props.hideDelayInMs) {
+//       setTimeout(() => {
+//         state.hasDataWithDelay = false
+//       }, props.hideDelayInMs)
+//     } else {
+//       state.hasDataWithDelay = false
+//     }
+//   }
+// }
+//
+// onMounted(() => {
+//   setHasData(props.hasData)
+// })
+//
+// watch(props, (value) => {
+//   setHasData(value.hasData)
+// })
 </script>
 
 <style lang="scss" scoped>
@@ -42,6 +78,7 @@ const props =  defineProps({
 
   .error, .no-data {
     @include flexbox(column, center, center, 8px);
+    color: #737373;
   }
 }
 </style>

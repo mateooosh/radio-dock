@@ -11,27 +11,16 @@
         <Tag v-for="tag in tagsArray" :key="tag" :content="tag"/>
       </div>
       <div class="radio-station-actions">
-        <button v-if="isCurrentlyLoading" class="inactive">
-          <font-awesome-icon icon="fa-solid fa-spinner" class="spin"/>
-          <span>Loading</span>
-        </button>
-        <button v-else-if="isCurrentlyPlaying" @click="pauseStation"
-                class="inactive">
-          <font-awesome-icon icon="fa-solid fa-stop"/>
-          <span>Pause</span>
-        </button>
-        <button v-else @click="playStation">
-          <font-awesome-icon icon="fa-solid fa-play"/>
-          <span>Play</span>
+        <button @click="togglePlayer" :class="{ inactive: isCurrentlyLoadingOrPlaying }">
+          <font-awesome-icon :icon="mainButtonIconName"
+                             :class="{ spin: isCurrentlyLoading }"/>
+          <span>{{ playerLabel }}</span>
         </button>
 
-        <button v-if="isFavorite" class="inactive">
+
+        <button :class="{ inactive: isFavorite }">
           <font-awesome-icon icon="fa-solid fa-fire"/>
-          <span @click="removeFromFavorites">Unobserve</span>
-        </button>
-        <button v-else>
-          <font-awesome-icon icon="fa-solid fa-fire"/>
-          <span @click="addToFavorites">Observe</span>
+          <span @click="toggleObservation">{{ observationLabel }}</span>
         </button>
       </div>
     </div>
@@ -55,7 +44,25 @@ export default defineComponent({
     station: {}
   },
   methods: {
+    togglePlayer() {
+      if (!this.isCurrentlyLoading) {
+        if (this.isCurrentlyPlaying)
+          this.pauseStation()
+        else
+          this.playStation()
+      }
+    },
+
+    toggleObservation() {
+      if (this.isFavorite) {
+        this.removeFromFavorites()
+      } else {
+        this.addToFavorites()
+      }
+    },
+
     playStation() {
+      console.log('playStation')
       this.$store.commit('setIsPlaying', false)
       this.$store.state.audio?.pause()
       this.$store.commit('setActiveStation', this.station)
@@ -67,6 +74,7 @@ export default defineComponent({
     },
 
     pauseStation() {
+      console.log('pauseStation')
       this.$store.commit('setIsPlaying', false)
       this.$store.state.audio?.pause()
     },
@@ -95,8 +103,30 @@ export default defineComponent({
     isCurrentlyPlaying() {
       return this.$store.state.isPlaying && this.$store.state.activeStation.stationuuid === this.station.stationuuid
     },
+    isCurrentlyLoadingOrPlaying() {
+      return this.isCurrentlyLoading || this.isCurrentlyPlaying
+    },
     isFavorite() {
       return _.some(this.$store.state.favoriteStations, ['stationuuid', this.station.stationuuid])
+    },
+    playerLabel() {
+      if (this.isCurrentlyLoading)
+        return 'Loading'
+      else if (this.isCurrentlyPlaying)
+        return 'Pause'
+      else
+        return 'Play'
+    },
+    mainButtonIconName() {
+      if (this.isCurrentlyLoading)
+        return 'fa-solid fa-spinner'
+      else if (this.isCurrentlyPlaying)
+        return 'fa-solid fa-stop'
+      else
+        return 'fa-solid fa-play'
+    },
+    observationLabel() {
+      return this.isFavorite ? 'Unobserve' : 'Observe'
     }
   }
 })
@@ -153,15 +183,15 @@ export default defineComponent({
       height: 30px;
       background-color: #5E2F83;
       outline: none;
-      border: none;
+      border: 2px solid #5E2F83;
       color: white;
       border-radius: 8px;
       font-weight: 600;
       font-size: 13px;
+      transition: background-color .4s;
 
       &.inactive {
         background-color: transparent;
-        border: 2px solid #5E2F83;
         color: #5E2F83;
       }
     }
