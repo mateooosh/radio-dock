@@ -1,17 +1,18 @@
 <template>
-  <data-load-status :is-loading="isLoading" :has-data="hasData" :has-error="hasError">
-    <div class="radio">
-      <div>
-        <div class="stations-title">
-          <span>Popular</span>
-          <font-awesome-icon icon="fa-solid fa-fire"/>
-        </div>
+  <div class="search-view">
+    <SearchBar :query-on-init="$route.params.query" :is-hidden-on-init="false"/>
+    <div>
+      <div class="stations-title">
+        <span>Popular</span>
+        <font-awesome-icon icon="fa-solid fa-fire"/>
+      </div>
+      <data-load-status :is-loading="isLoading" :has-data="hasData" :has-error="hasError">
         <div class="stations-column">
           <RadioStation v-for="(station, i) in stations" :key="i" :station="station"/>
         </div>
-      </div>
+      </data-load-status>
     </div>
-  </data-load-status>
+  </div>
 </template>
 
 <script>
@@ -37,7 +38,12 @@ export default defineComponent({
   },
   methods: {
     async searchStations() {
-      this.stations = await RadioBrowser.searchStations({name: this.$route.params.query, limit: 20, order: 'votes', reverse: true})
+      this.stations = await RadioBrowser.searchStations({
+        name: this.$route.params.query,
+        limit: 20,
+        order: 'votes',
+        reverse: true
+      })
       this.isLoading = false
       this.hasData = true
     }
@@ -48,23 +54,22 @@ export default defineComponent({
 <style lang="scss" scoped>
 @import '../styles/mixins';
 
-.radio {
+.search-view {
   @include flexbox(column, normal, normal, 16px);
   min-height: 100vh;
   width: 100%;
-  padding-bottom: 60px;
+  padding: 16px 16px 60px;
 
   .stations-title {
     @include flexbox(row, normal, normal, 8px);
     text-align: left;
-    padding: 8px 16px;
+    padding: 8px 0;
     font-weight: 600;
     font-size: 18px;
   }
 
   .stations-column {
     @include flexbox(column, normal, normal, 16px);
-    padding: 0 16px;
     width: 100%;
 
     &::-webkit-scrollbar {

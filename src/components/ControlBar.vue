@@ -54,13 +54,13 @@ export default defineComponent({
   height: 60px;
   width: 100%;
   padding: 0 16px;
-  background-color: rgb(40, 40, 40);
+  background-color: #5E2F83;
   color: rgb(222, 222, 222);
 
   .details {
     flex: 1;
     padding: 0;
-    background-color: rgb(40, 40, 40);
+    background-color: #5E2F83 ;
     color: rgb(222, 222, 222);
     font-weight: 600;
     font-size: 16px;

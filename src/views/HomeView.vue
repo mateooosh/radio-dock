@@ -1,33 +1,29 @@
 <template>
-  <data-load-status :is-loading="isLoading" :has-data="hasData" :has-error="hasError">
-    <div class="radio">
-      <SearchBar/>
-      <button class="radio-random-station" @click="playRandomStation">Play random station</button>
-      <div class="stations-section">
-        <div class="stations-title">
-          <span>Favorites</span>
-          <font-awesome-icon icon="fa-solid fa-heart" size="l"/>
-        </div>
-        <data-load-status :has-data="hasFavoriteStations">
-          <div class="stations-column">
-            <RadioStation v-for="(station, i) in $store.state.favoriteStations" :key="i" :station="station"/>
-          </div>
-        </data-load-status>
+  <div class="home-view">
+    <SearchBar/>
+    <div class="stations-section">
+      <div class="stations-title">
+        <span>Favorites</span>
+        <font-awesome-icon icon="fa-solid fa-heart" size="l"/>
       </div>
+      <data-load-status :has-data="hasFavoriteStations" class="stations-column">
+        <RadioStation v-for="(station, i) in $store.state.favoriteStations" :key="i" :station="station"/>
+      </data-load-status>
+    </div>
 
-      <div class="stations-section">
-        <div class="stations-title">
-          <span>Popular</span>
-          <font-awesome-icon icon="fa-solid fa-fire" size="l"/>
-          <span class="stations-title-see-all" @click="seeAll">See all</span>
-        </div>
+    <div class="stations-section">
+      <div class="stations-title">
+        <span>Popular</span>
+        <font-awesome-icon icon="fa-solid fa-fire" size="l"/>
+        <span class="stations-title-see-all" @click="seeAll">See all</span>
+      </div>
+      <data-load-status :is-loading="isLoading" :has-data="hasData" :has-error="hasError">
         <div class="stations-column">
           <RadioStation v-for="(station, i) in mostVotedStations" :key="i" :station="station"/>
         </div>
-      </div>
+      </data-load-status>
     </div>
-
-  </data-load-status>
+  </div>
 </template>
 
 <script>
@@ -54,17 +50,6 @@ export default defineComponent({
     }
   },
   methods: {
-    playRandomStation() {
-      this.$store.commit('setIsPlaying', false)
-      this.$store.state.audio?.pause()
-      const randomStation = _.sample(this.mostVotedStations)
-      this.$store.commit('setActiveStation', randomStation)
-      this.$store.commit('setAudio', new Audio(randomStation.url_resolved))
-      this.$store.state.audio?.play().then(() => {
-        this.$store.commit('setIsPlaying', true)
-      })
-    },
-
     async getMostVotedStations() {
       this.mostVotedStations = await RadioBrowser.getStations({by: 'topvote', limit: 10})
       this.isLoading = false
@@ -93,32 +78,20 @@ export default defineComponent({
 <style lang="scss" scoped>
 @import '../styles/mixins';
 
-.radio {
+.home-view {
   @include flexbox(column, normal, normal, 16px);
   min-height: 100vh;
   width: 100%;
-  //to remove
-  padding-bottom: 60px;
+  padding: 16px 16px 60px;
 
   .stations-section:last-of-type {
     padding-bottom: 20px;
   }
 
-  &-random-station {
-    margin: 16px;
-    background-color: #5E2F83;
-    outline: none;
-    border: none;
-    color: white;
-    border-radius: 8px;
-    font-weight: 600;
-    padding: 16px;
-  }
-
   .stations-title {
     @include flexbox(row, normal, normal, 8px);
     text-align: left;
-    padding: 8px 16px;
+    padding: 8px 0;
     font-weight: 600;
     font-size: 18px;
 
@@ -132,7 +105,6 @@ export default defineComponent({
 
   .stations-column {
     @include flexbox(column, normal, normal, 16px);
-    padding: 0 16px;
     width: 100%;
 
     &::-webkit-scrollbar {
