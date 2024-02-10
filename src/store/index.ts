@@ -39,14 +39,15 @@ export default createStore({
   actions: {
     play({ state }) {
       state.audio?.play()
-        .then(() => this.commit('setIsPlaying', true))
+        .then(() => {
+          state.audio?.addEventListener('error', () => {
+            setTimeout(() => {
+              this.dispatch('play')
+            }, 1000)
+          })
+          this.commit('setIsPlaying', true)
+        })
         .finally(() => this.commit('setIsLoading', false))
-
-      state.audio?.addEventListener('error', () => {
-        setTimeout(() => {
-          this.dispatch('play')
-        }, 1000)
-      })
     },
 
     pause({ state }) {
