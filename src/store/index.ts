@@ -6,11 +6,10 @@ export default createStore({
     activeStation: {},
     isPlaying: false,
     isLoading: false,
-    audio: null,
+    audio: new Audio(),
     favoriteStations: new Array([])
   },
-  getters: {
-  },
+  getters: {},
   mutations: {
     setActiveStation(state, payload) {
       state.activeStation = payload
@@ -38,8 +37,21 @@ export default createStore({
     }
   },
   actions: {
+    play({ state }) {
+      state.audio?.play()
+        .then(() => this.commit('setIsPlaying', true))
+        .finally(() => this.commit('setIsLoading', false))
 
+      state.audio?.addEventListener('error', () => {
+        setTimeout(() => {
+          this.dispatch('play')
+        }, 1000)
+      })
+    },
+
+    pause({ state }) {
+      state.audio?.pause()
+    }
   },
-  modules: {
-  }
+  modules: {}
 })

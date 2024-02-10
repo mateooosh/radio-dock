@@ -30,14 +30,12 @@ export default defineComponent({
   methods: {
     pauseAudio() {
       this.$store.commit('setIsPlaying', false)
-      this.$store.state.audio?.pause()
+      this.$store.dispatch('pause')
     },
 
     playAudio() {
       this.$store.commit('setIsLoading', true)
-      this.$store.state.audio?.play()
-          .then(() => this.$store.commit('setIsPlaying', true))
-          .finally(() => this.$store.commit('setIsLoading', false))
+      this.$store.dispatch('play')
     }
   }
 })

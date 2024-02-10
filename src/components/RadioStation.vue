@@ -33,6 +33,7 @@ import Tag from '@/components/Tag.vue'
 import {useStore} from 'vuex'
 import _ from 'lodash'
 import {showNotify} from 'vant'
+import logger from "@fortawesome/vue-fontawesome/src/logger";
 
 export default defineComponent({
   name: 'RadioStation',
@@ -62,21 +63,17 @@ export default defineComponent({
     },
 
     playStation() {
-      console.log('playStation')
       this.$store.commit('setIsPlaying', false)
-      this.$store.state.audio?.pause()
+      this.$store.dispatch('pause')
       this.$store.commit('setActiveStation', this.station)
       this.$store.commit('setAudio', new Audio(this.station.url_resolved))
       this.$store.commit('setIsLoading', true)
-      this.$store.state.audio?.play()
-          .then(() => this.$store.commit('setIsPlaying', true))
-          .finally(() => this.$store.commit('setIsLoading', false))
+      this.$store.dispatch('play')
     },
 
     pauseStation() {
-      console.log('pauseStation')
       this.$store.commit('setIsPlaying', false)
-      this.$store.state.audio?.pause()
+      this.$store.dispatch('pause')
     },
 
     addToFavorites() {
